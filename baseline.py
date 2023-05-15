@@ -70,7 +70,6 @@ class Image:
 
         # apply watershed algorithm to assign unknown regions to foreground, background or boundary
         self.labels = cv.watershed(self.img, markers)
-        return self.labels
     
     # find enclosing ellipses using cv.minAreaRect and add to image
     def add_enclosing_ellipses(self):
@@ -136,7 +135,6 @@ class Image:
         self.area = np.array(area) * ((100/94)**2)
         self.cleaned_labels = labels_copy
         self.img_with_ellipses = img_copy
-        return self.img_with_ellipses, self.cleaned_labels, self.area, self.axes
 
 # ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -214,33 +212,36 @@ def main():
     # list of all filenames in specified folder
     filenames = os.listdir(path)
 
-    results = []
-    results_cleaned = []
     diams = []
     size = []
 
     # iterate over all files
     for filename in filenames:
+        print('Analyzing ' + filename + '...')
+
         # path to image
         file = os.path.join(path, filename)
-        print(file)
 
         # read image
         img = Image(file)
 
         # apply watershed algorithm
-        labels = img.apply_watershed()
-        # plt.imsave('base_model_watershed/' + filename.split('.')[0] + '_wtrshd.tiff', labels)
-        results.append(labels)
+        img.apply_watershed()
+
+        # # save labeled image
+        # plt.imsave('base_model_watershed/' + filename.split('.')[0] + '_wtrshd_colored.tiff', 
+        #            img.watershed_img, cmap='jet')
 
         # fit enclosing ellipses and add to image
-        img_with_ellipses, labels_cleaned, a, d = img.add_enclosing_ellipses()
-        # cv.imwrite('base_model_ellipses/' + filename.split('.')[0] + '_elps.tif', img_with_ellipses)
+        img.add_enclosing_ellipses()
+
+        # # save image with ellipses
+        # cv.imwrite('base_model_ellipses/' + filename.split('.')[0] + '_elps.tif', 
+        #            img.img_with_ellipses)
 
         # save axes lengths, areas and cleaned labels
-        diams.append(d)
-        size.append(a)
-        results_cleaned.append(labels_cleaned)
+        diams.append(img.axes)
+        size.append(img.area)
 
 
     # split area and diams into three lists according to suffix of filename (i.e., 'yy', 'yn', 'nn')
