@@ -1,2 +1,7 @@
 /.venv
 /DE_annotated_pictures
+/base_model_pictures
+/base_model_masking_old
+/base_model_ellipses
+/base_model_watershed
+masking_trials.ipynb
