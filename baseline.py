@@ -26,10 +26,12 @@ class Image:
         self.area = None
         self.axes = None
         self.img_with_ellipses = None
+        self.area_distr_par = None
     
     # preprocess image and apply watershed algorithm to detect, detach and label cells
     def apply_watershed(self):
-        """ Preprocess image and apply watershed algorithm to detect, detach and label cells
+        """
+        Preprocess image and apply watershed algorithm to detect, detach and label cells
         parameters
         ----------
         self.img: source image
@@ -73,7 +75,8 @@ class Image:
     
     # find enclosing ellipses using cv.minAreaRect and add to image
     def add_enclosing_ellipses(self):
-        """ Find enclosing ellipse using cv.minAreaRect
+        """
+        Find enclosing ellipse using cv.minAreaRect
         parameters
         ----------
         self.img: source image
@@ -136,6 +139,29 @@ class Image:
         self.cleaned_labels = labels_copy
         self.img_with_ellipses = img_copy
 
+    # compute statistics characterizing the distribution of cell sizes
+    def compute_statistics(self):
+        """
+        Compute statistics characterizing the distribution of cell sizes
+        parameters
+        ----------
+        self.area: list of areas
+        """
+        # mean area
+        mean_area = np.mean(self.area)
+        # standard deviation of area
+        std_area = np.std(self.area)
+        # minimum area
+        min_area = np.min(self.area)
+        # maximum area
+        max_area = np.max(self.area)
+        # quantiles of area
+        quantiles_area = np.quantile(self.area, [0.25, 0.5, 0.75])
+
+        # save parameters in array
+        self.area_distr_par = np.array([mean_area, std_area, min_area, max_area, quantiles_area[0], 
+                               quantiles_area[1], quantiles_area[2]])
+
 # ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
@@ -145,7 +171,8 @@ class Image:
 # split lists containing area and diameters of objects into three lists according to suffix of filename 
 # i.e., 'yy', 'yn', 'nn', that is, according to annotation
 def split_by_annotation(area, diams, filenames):
-    """ Split area and diams into three lists according to suffix of filename (i.e., 'yy', 'yn', 'nn')
+    """
+    Split area and diams into three lists according to suffix of filename (i.e., 'yy', 'yn', 'nn')
     parameters
     ----------
     area: list of areas
@@ -242,6 +269,9 @@ def main():
         # save axes lengths, areas and cleaned labels
         diams.append(img.axes)
         size.append(img.area)
+
+        # compute parameters charaterizing distribution of cell sizes
+        img.compute_statistics()
 
 
     # split area and diams into three lists according to suffix of filename (i.e., 'yy', 'yn', 'nn')
