@@ -1,8 +1,8 @@
 /.venv
-/DE_annotated_pictures
-/base_model_pictures
+/src/QcCell/DE_annotated_pictures
+/src/QcCell/base_model_pictures
 /base_model_masking_old
 /base_model_ellipses
 /base_model_watershed
-masking_trials.ipynb
-baseline_model.ipynb
+/src/QcCell/masking_trials.ipynb
+/src/QcCell/baseline_model.ipynb
