@@ -16,4 +16,4 @@ QcDe23/
 │       └── baseline.py
 └── tests/
 ```
-Store your imaging data processed in the baseline model in the folder 'base_model_pictures'.
+Store your imaging data processed for analysis by the baseline model in the folder `base_model_pictures`.
